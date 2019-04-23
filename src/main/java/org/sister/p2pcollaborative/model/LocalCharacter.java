@@ -1,4 +1,4 @@
-package org.sister.p2pcollaborative;
+package org.sister.p2pcollaborative.model;
 
 public class LocalCharacter {
     private char value;

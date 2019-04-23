@@ -1,4 +1,4 @@
-package org.sister.p2pcollaborative;
+package org.sister.p2pcollaborative.model;
 
 import java.util.ArrayList;
 import java.util.List;

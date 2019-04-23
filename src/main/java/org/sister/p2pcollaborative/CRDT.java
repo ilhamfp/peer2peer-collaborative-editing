@@ -1,6 +1,8 @@
 package org.sister.p2pcollaborative;
 
 import com.fasterxml.uuid.Generators;
+import org.sister.p2pcollaborative.model.Character;
+import org.sister.p2pcollaborative.model.LocalCharacter;
 
 import java.util.ArrayList;
 import java.util.List;
