@@ -45,8 +45,8 @@ public class ClientWebSocket extends WebSocketClient {
         System.err.println("an error occurred:" + ex);
     }
 
-    public static void main(String[] args) throws URISyntaxException {
-        WebSocketClient client = new ClientWebSocket(new URI("ws://localhost:8887"));
-        client.connect();
-    }
+//    public static void main(String[] args) throws URISyntaxException {
+//        WebSocketClient client = new ClientWebSocket(new URI("ws://localhost:8887"));
+//        client.connect();
+//    }
 }

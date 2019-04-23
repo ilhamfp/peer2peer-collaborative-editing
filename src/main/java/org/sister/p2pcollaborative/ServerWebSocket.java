@@ -3,11 +3,13 @@ package org.sister.p2pcollaborative;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
+import com.google.gson.Gson;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
 public class ServerWebSocket extends WebSocketServer {
+
 
     public ServerWebSocket(InetSocketAddress address) {
         super(address);
@@ -28,11 +30,16 @@ public class ServerWebSocket extends WebSocketServer {
     @Override
     public void onMessage(WebSocket conn, String message) {
         System.out.println("received message from "	+ conn.getRemoteSocketAddress() + ": " + message);
+        Controller controller = Controller.getInstance();
+        String operation = message.substring(0,1);
+        Character character = new Gson().fromJson(message.substring(1), Character.class);
+        controller.onMessage(operation, character);
     }
 
     @Override
     public void onMessage( WebSocket conn, ByteBuffer message ) {
         System.out.println("received ByteBuffer from "	+ conn.getRemoteSocketAddress());
+
     }
 
     @Override
@@ -46,11 +53,11 @@ public class ServerWebSocket extends WebSocketServer {
     }
 
 
-    public static void main(String[] args) {
-        String host = "localhost";
-        int port = 8887;
-
-        WebSocketServer server = new ServerWebSocket(new InetSocketAddress(host, port));
-        server.run();
-    }
+//    public static void main(String[] args) {
+//        String host = "localhost";
+//        int port = 8887;
+//
+//        WebSocketServer server = new ServerWebSocket(new InetSocketAddress(host, port));
+//        server.run();
+//    }
 }

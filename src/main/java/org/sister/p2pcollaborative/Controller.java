@@ -5,9 +5,11 @@ import com.google.gson.Gson;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft;
 import org.java_websocket.handshake.ServerHandshake;
+import org.java_websocket.server.WebSocketServer;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.Document;
+import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -15,10 +17,47 @@ import java.util.List;
 
 public class Controller{
 
+    private static Controller controller;
+    private String host = "localhost";
+    private int port = 8887;
+    private WebSocketServer server;
+    private CRDT crdt;
+    private Editor editor;
+    private WebSocketClient client;
 
-    public static void main(String[] args) throws URISyntaxException {
-        WebSocketClient client = new ClientWebSocket(new URI("ws://localhost:8887"));
+    public void onMessage(String operation, Character character) {
+
+    }
+
+    private Controller() {
+
+    }
+
+    public void
+
+    public static Controller getInstance() {
+        if (controller == null) {
+            controller = new Controller();
+        }
+        return controller;
+    }
+
+    public void run() {
+        // run server
+
+
+        server = new ServerWebSocket(new InetSocketAddress(host, port));
+        server.run();
+        // run client
+        client = null;
+        try {
+            client = new ClientWebSocket(new URI("ws://localhost:8887"));
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
         client.connect();
+
+        // test
         List<Integer> l1 = List.of(1,1,2,3);
         List<Integer> l2 = List.of(1,1,3,1,1,1,1);
         List<Integer> l3 = Character.generatePositionBetween(l1, l2);
@@ -30,7 +69,7 @@ public class Controller{
         Character character3 = new Character('c', l3, Generators.timeBasedGenerator().generate());
         Character character4 = new Character('d', l4, Generators.timeBasedGenerator().generate());
         Character character5 = new Character('e', l5, Generators.timeBasedGenerator().generate());
-        CRDT crdt = new CRDT();
+        crdt = new CRDT();
 
 //        System.out.println("AFTER 1");
         crdt.remoteInsert(character1);
@@ -81,9 +120,8 @@ public class Controller{
 //            System.out.println(Character.arrayDigitsToLong(c.getPosition(), c.getPosition().size()));
         });
 
-        Editor editor = new Editor();
+        editor = new Editor();
         editor.setDocumentListener(new Editor.DocumentListener() {
-            String newline = "\n";
 
             public void insertUpdate(DocumentEvent e) {
                 int position = editor.getPosition();
@@ -100,5 +138,9 @@ public class Controller{
 
             }
         });
+    }
+
+    public static void main(String[] args) {
+        Controller.getInstance().run();
     }
 }
