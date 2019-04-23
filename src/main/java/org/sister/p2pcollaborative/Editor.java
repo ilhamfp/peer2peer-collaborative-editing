@@ -24,8 +24,8 @@ public class Editor extends JFrame implements ActionListener {
         t.getDocument().addDocumentListener(documentListener);
     }
 
-    public JTextArea getT() {
-        return t;
+    public String getText() {
+        return t.getText();
     }
 
     // Constructor
@@ -109,6 +109,10 @@ public class Editor extends JFrame implements ActionListener {
 
     public void insertChar(char c, int position){
         t.insert(String.valueOf(c),position);
+    }
+
+    public int getPosition() {
+        return t.getCaretPosition();
     }
 
     public interface DocumentListener extends javax.swing.event.DocumentListener {

@@ -1,14 +1,24 @@
 package org.sister.p2pcollaborative;
 
 import com.fasterxml.uuid.Generators;
+import com.google.gson.Gson;
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.drafts.Draft;
+import org.java_websocket.handshake.ServerHandshake;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.Document;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Controller {
-    public static void main(String[] args) {
+public class Controller{
+
+
+    public static void main(String[] args) throws URISyntaxException {
+        WebSocketClient client = new ClientWebSocket(new URI("ws://localhost:8887"));
+        client.connect();
         List<Integer> l1 = List.of(1,1,2,3);
         List<Integer> l2 = List.of(1,1,3,1,1,1,1);
         List<Integer> l3 = Character.generatePositionBetween(l1, l2);
@@ -22,53 +32,53 @@ public class Controller {
         Character character5 = new Character('e', l5, Generators.timeBasedGenerator().generate());
         CRDT crdt = new CRDT();
 
-        System.out.println("AFTER 1");
+//        System.out.println("AFTER 1");
         crdt.remoteInsert(character1);
         crdt.getCharacters().forEach(c -> {
-            System.out.println(c.getValue());
-            System.out.println(Character.arrayDigitsToLong(c.getPosition(), c.getPosition().size()));
+//            System.out.println(c.getValue());
+//            System.out.println(Character.arrayDigitsToLong(c.getPosition(), c.getPosition().size()));
         });
 
-        System.out.println("AFTER 2");
+//        System.out.println("AFTER 2");
         crdt.remoteInsert(character2);
         crdt.getCharacters().forEach(c -> {
-            System.out.println(c.getValue());
-            System.out.println(Character.arrayDigitsToLong(c.getPosition(), c.getPosition().size()));
+//            System.out.println(c.getValue());
+//            System.out.println(Character.arrayDigitsToLong(c.getPosition(), c.getPosition().size()));
         });
 
-        System.out.println("AFTER 3");
+//        System.out.println("AFTER 3");
         crdt.remoteInsert(character3);
         crdt.getCharacters().forEach(c -> {
-            System.out.println(c.getValue());
-            System.out.println(Character.arrayDigitsToLong(c.getPosition(), c.getPosition().size()));
+//            System.out.println(c.getValue());
+//            System.out.println(Character.arrayDigitsToLong(c.getPosition(), c.getPosition().size()));
         });
 
-        System.out.println("AFTER 4");
+//        System.out.println("AFTER 4");
         crdt.remoteInsert(character4);
         crdt.getCharacters().forEach(c -> {
-            System.out.println(c.getValue());
-            System.out.println(Character.arrayDigitsToLong(c.getPosition(), c.getPosition().size()));
+//            System.out.println(c.getValue());
+//            System.out.println(Character.arrayDigitsToLong(c.getPosition(), c.getPosition().size()));
         });
 
-        System.out.println("AFTER 5");
+//        System.out.println("AFTER 5");
         crdt.remoteInsert(character5);
         crdt.getCharacters().forEach(c -> {
-            System.out.println(c.getValue());
-            System.out.println(Character.arrayDigitsToLong(c.getPosition(), c.getPosition().size()));
+//            System.out.println(c.getValue());
+//            System.out.println(Character.arrayDigitsToLong(c.getPosition(), c.getPosition().size()));
         });
 
-        System.out.println("AFTER DELETE 3");
+//        System.out.println("AFTER DELETE 3");
         crdt.remoteDelete(character3);
         crdt.getCharacters().forEach(c -> {
-            System.out.println(c.getValue());
-            System.out.println(Character.arrayDigitsToLong(c.getPosition(), c.getPosition().size()));
+//            System.out.println(c.getValue());
+//            System.out.println(Character.arrayDigitsToLong(c.getPosition(), c.getPosition().size()));
         });
 
-        System.out.println("AFTER DELETE 1");
+//        System.out.println("AFTER DELETE 1");
         crdt.remoteDelete(character1);
         crdt.getCharacters().forEach(c -> {
-            System.out.println(c.getValue());
-            System.out.println(Character.arrayDigitsToLong(c.getPosition(), c.getPosition().size()));
+//            System.out.println(c.getValue());
+//            System.out.println(Character.arrayDigitsToLong(c.getPosition(), c.getPosition().size()));
         });
 
         Editor editor = new Editor();
@@ -76,17 +86,18 @@ public class Controller {
             String newline = "\n";
 
             public void insertUpdate(DocumentEvent e) {
-                int position = editor.getT().getCaretPosition();
-                String text = editor.getT().getText();
-                System.out.println("Insert at " + position + " char " + text.charAt(position));
+                int position = editor.getPosition();
+                client.send("INSERT-" + new Gson().toJson(crdt.localInsert(editor.getText().charAt(position), position)));
             }
             public void removeUpdate(DocumentEvent e) {
-                int position = editor.getT().getCaretPosition()-1;
-                String text = editor.getT().getText();
-                System.out.println("Removed char at " + position);
+                int position = editor.getPosition()-1;
+                crdt.localDelete(position);
+                client.send("REMOVE-" + position);
+
             }
             public void changedUpdate(DocumentEvent e) {
                 //Plain text components do not fire these events
+
             }
         });
     }
