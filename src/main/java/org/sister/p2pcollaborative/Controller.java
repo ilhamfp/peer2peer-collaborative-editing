@@ -27,7 +27,8 @@ public class Controller{
 
     public void onMessage(String operation, Character character) {
         if (operation.equalsIgnoreCase("I")) {
-            crdt.remoteInsert(character);
+            LocalCharacter localCharacter = crdt.remoteInsert(character);
+            editor.insertChar(localCharacter.getValue(), localCharacter.getIndex());
         } else {
             crdt.remoteDelete(character);
         }
@@ -52,13 +53,13 @@ public class Controller{
         server.start();
         // run client
         System.out.println("hsdjfklfdjsa");
-        client = null;
-        try {
-            client = new ClientWebSocket(new URI("ws://localhost:8887"));
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        client.connect();
+//        client = null;
+//        try {
+//            client = new ClientWebSocket(new URI("ws://localhost:8887"));
+//        } catch (URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        client.connect();
 
         // test
 //        List<Integer> l1 = List.of(1,1,2,3);

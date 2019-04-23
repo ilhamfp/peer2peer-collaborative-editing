@@ -64,8 +64,7 @@ public class CRDT {
         else {
             for (int i = 0; i < characters.size(); i++) {
                 Character current = characters.get(i);
-                Integer maxDigits = Math.max(current.getPosition().size(),
-                        character.getPosition().size());
+                Integer maxDigits = Math.max(current.getPosition().size(), character.getPosition().size());
                 Long absPosition = Character.arrayDigitsToLong(character.getPosition(), maxDigits);
                 if (Character.arrayDigitsToLong(current.getPosition(), maxDigits) >= absPosition) {
                     System.out.println("i " + i);
