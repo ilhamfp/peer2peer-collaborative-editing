@@ -46,9 +46,8 @@ public class Controller{
     }
 
     public void run() {
+        crdt = new CRDT();
         // run server
-
-
         server = new ServerWebSocket(new InetSocketAddress(host, port));
         server.start();
         // run client
@@ -73,7 +72,7 @@ public class Controller{
 //        Character character3 = new Character('c', l3, Generators.timeBasedGenerator().generate());
 //        Character character4 = new Character('d', l4, Generators.timeBasedGenerator().generate());
 //        Character character5 = new Character('e', l5, Generators.timeBasedGenerator().generate());
-//        crdt = new CRDT();
+
 //
 ////        System.out.println("AFTER 1");
 //        crdt.remoteInsert(character1);
@@ -128,13 +127,13 @@ public class Controller{
         editor.setDocumentListener(new Editor.DocumentListener() {
 
             public void insertUpdate(DocumentEvent e) {
-                int position = editor.getPosition();
-                client.send("I" + new Gson().toJson(crdt.localInsert(editor.getText().charAt(position), position)));
+                int position = editor.getT().getCaretPosition();
+                Character c = crdt.localInsert(editor.getT().getText().charAt(position), position);
+                client.send("I" + new Gson().toJson(c));
             }
             public void removeUpdate(DocumentEvent e) {
                 int position = editor.getPosition()-1;
-                crdt.localDelete(position);
-                client.send("R" + position);
+                client.send("R" + new Gson().toJson(crdt.localDelete(position)));
 
             }
             public void changedUpdate(DocumentEvent e) {

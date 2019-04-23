@@ -21,7 +21,12 @@ public class CRDT {
     public Character localInsert(char value, int index) {
         List<Integer> position;
         if (index == 0) {
-            position = Character.generatePositionBetween(new ArrayList<Integer>(), characters.get(index).getPosition());
+            if (characters.size() == 0) {
+                position = List.of(1);
+            }
+            else {
+                position = Character.generatePositionBetween(new ArrayList<Integer>(), characters.get(index).getPosition());
+            }
         }
         else if (index == characters.size()) {
             position = Character.generatePositionBetween(characters.get(index-1).getPosition(), new ArrayList<Integer>());

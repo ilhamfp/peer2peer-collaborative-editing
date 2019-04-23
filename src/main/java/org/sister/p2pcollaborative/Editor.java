@@ -24,8 +24,8 @@ public class Editor extends JFrame implements ActionListener {
         t.getDocument().addDocumentListener(documentListener);
     }
 
-    public String getText() {
-        return t.getText();
+    public JTextArea getT() {
+        return t;
     }
 
     // Constructor

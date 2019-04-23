@@ -64,7 +64,7 @@ public class Character {
         Integer maxDigit = Math.max(before.size(), after.size());
         Long beforeLong = arrayDigitsToLong(before, maxDigit);
         Long afterLong = arrayDigitsToLong(after, maxDigit);
-        if (afterLong - beforeLong == 1) {
+        if (Math.abs(afterLong - beforeLong) == 1) {
             afterLong *= 10;
             beforeLong *= 10;
         }
