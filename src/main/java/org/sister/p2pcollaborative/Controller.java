@@ -2,6 +2,8 @@ package org.sister.p2pcollaborative;
 
 import com.fasterxml.uuid.Generators;
 
+import javax.swing.event.DocumentEvent;
+import javax.swing.text.Document;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,6 +69,25 @@ public class Controller {
         crdt.getCharacters().forEach(c -> {
             System.out.println(c.getValue());
             System.out.println(Character.arrayDigitsToLong(c.getPosition(), c.getPosition().size()));
+        });
+
+        Editor editor = new Editor();
+        editor.setDocumentListener(new Editor.DocumentListener() {
+            String newline = "\n";
+
+            public void insertUpdate(DocumentEvent e) {
+                int position = editor.getT().getCaretPosition();
+                String text = editor.getT().getText();
+                System.out.println("Insert at " + position + " char " + text.charAt(position));
+            }
+            public void removeUpdate(DocumentEvent e) {
+                int position = editor.getT().getCaretPosition()-1;
+                String text = editor.getT().getText();
+                System.out.println("Removed char at " + position);
+            }
+            public void changedUpdate(DocumentEvent e) {
+                //Plain text components do not fire these events
+            }
         });
     }
 }
