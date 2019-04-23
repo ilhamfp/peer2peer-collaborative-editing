@@ -13,11 +13,11 @@ public class Controller{
 
     private static Controller controller;
     private String host = "localhost";
-    private int port = 8882;
-    private Messenger.Server server;
+    private int port = 8884;
+    private Messenger messenger;
     private CRDT crdt;
     private Editor editor;
-    private List<Messenger.Client> clients = new ArrayList<>();
+
     private List<String> hosts = new ArrayList<>();
     private List<Integer> ports = new ArrayList<>();
 
@@ -42,30 +42,10 @@ public class Controller{
         return controller;
     }
 
-    private void sendToClient(String str) {
-        for (Messenger.Client client : clients) {
-            try {
-                client.getOutputStream().writeUTF(str);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void spawnClientThreads() {
-        for (int i = 0; i < hosts.size(); i++) {
-            Messenger.Client client = new Messenger.Client(hosts.get(i), ports.get(i));
-            client.start();
-            clients.add(client);
-        }
-    }
-
     public void run() {
         crdt = new CRDT();
-        server = new Messenger.Server(port);
-        server.start();
-
-        spawnClientThreads();
+        messenger = new Messenger(port);
+        messenger.start();
 
         editor = new Editor();
         editor.setDocumentListener(new Editor.DocumentListener() {
@@ -73,11 +53,11 @@ public class Controller{
             public void insertUpdate(DocumentEvent e) {
                 int position = editor.getT().getCaretPosition();
                 Character c = crdt.localInsert(editor.getT().getText().charAt(position), position);
-                sendToClient("I" + new Gson().toJson(c));
+                messenger.sendToClient("I" + new Gson().toJson(c));
             }
             public void removeUpdate(DocumentEvent e) {
                 int position = editor.getPosition()-1;
-                sendToClient("R" + new Gson().toJson(crdt.localDelete(position)));
+                messenger.sendToClient("R" + new Gson().toJson(crdt.localDelete(position)));
 
             }
             public void changedUpdate(DocumentEvent e) {
@@ -88,5 +68,6 @@ public class Controller{
 
     public static void main(String[] args) {
         Controller.getInstance().run();
+
     }
 }

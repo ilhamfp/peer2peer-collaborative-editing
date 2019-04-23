@@ -7,31 +7,67 @@ import org.sister.p2pcollaborative.model.Character;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Messenger {
 
     private static Messenger messenger;
-    private Messenger() {
+    private List<Client> clients = new ArrayList<>();
+    private Server server;
+
+    private String serverHost = "localhost";
+    private int serverPort;
+
+    private String signalHost = "localhost";
+    private int signalPort = 8885;
+
+    public Messenger(int port) {
+        clients = new ArrayList<>();
+        serverPort = port;
 
     }
 
-    public static Messenger getInstance() {
+    public static Messenger getInstance(int port) {
         if (messenger == null) {
-            messenger = new Messenger();
+            messenger = new Messenger(port);
         }
         return messenger;
     }
 
+    public void start(){
+        server = new Server(serverPort);
+        server.start();
 
-    public void startClient(String address, Integer port) {
-        new Client(address, port).start();
+        Client signalConnect = new Client(signalHost, signalPort);
+        signalConnect.start();
+
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            signalConnect.getOutputStream().writeUTF(serverHost + " " + String.valueOf(serverPort));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void startServer(Integer port) {
-        new Server(port).start();
+
+    public void sendToClient(String str) {
+        for (Messenger.Client client : clients) {
+            try {
+                client.getOutputStream().writeUTF(str);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
-    static class Client extends Thread {
+
+    private class Client extends Thread {
         private String address;
         private Integer port;
         private Socket socket;
@@ -64,7 +100,7 @@ public class Messenger {
         }
     }
 
-    static class Server extends Thread {
+    private class Server extends Thread {
         private Integer port;
         private ServerSocket serverSocket;
 
@@ -77,7 +113,7 @@ public class Messenger {
             super.run();
             try {
                 serverSocket = new ServerSocket(port);
-                System.out.println("Server started");
+                System.out.println("Server started at port " + String.valueOf(serverPort));
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -96,7 +132,7 @@ public class Messenger {
         }
     }
 
-    static class ClientHandler extends Thread {
+    private class ClientHandler extends Thread {
 
         private Socket socket;
         private DataInputStream inputStream;
@@ -117,14 +153,23 @@ public class Messenger {
                         message = null;
                     }
                     if (message != null) {
-                        System.out.println(message);
+                        System.out.println("GET NEW MESSAGE: " + message);
                         Controller controller = Controller.getInstance();
                         String operation = message.substring(0,1);
-                        Character character = new Gson().fromJson(message.substring(1), Character.class);
-                        controller.onMessage(operation, character);
+                        if (operation.equals("S")) {
+                            // message from signal
+                            String[] splited = message.split("\\s+");
+                            Client newConnection = new Client(splited[1], Integer.parseInt(splited[2]));
+                            newConnection.start();
+                            clients.add(newConnection);
+                        } else {
+                            Character character = new Gson().fromJson(message.substring(1), Character.class);
+                            controller.onMessage(operation, character);
+                        }
+
                     }
                     else {
-                        System.out.println("WAITING FOR MESSAGE");
+//                        System.out.println("WAITING FOR MESSAGE");
                     }
                 }
             } catch (IOException e) {
@@ -134,14 +179,14 @@ public class Messenger {
     }
 
     public static void main(String[] args) {
-        Messenger messenger = Messenger.getInstance();
-        messenger.startServer(8884);
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        messenger.startClient("127.0.0.1", 8884);
+//        Messenger messenger = Messenger.getInstance();
+//        messenger.startServer(8884);
+//        try {
+//            Thread.sleep(3000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        messenger.startClient("127.0.0.1", 8884);
     }
 
 }
