@@ -14,6 +14,10 @@ public class Editor extends JFrame implements ActionListener {
     // Text component
     JTextArea t;
     JTextField tf;
+    JLabel l,l2;
+
+    //Button
+    JButton b;
 
     // Frame
     JFrame f;
@@ -22,6 +26,8 @@ public class Editor extends JFrame implements ActionListener {
     JPanel p;
     private KeyListener keyListener;
 
+    //Insets
+    private static final Insets insets = new Insets(0, 0, 0, 0);
 
     public void setKeyListener(KeyListener keyListener) {
         this.keyListener = keyListener;
@@ -48,14 +54,10 @@ public class Editor extends JFrame implements ActionListener {
 
         // Create a panel
         p = new JPanel();
-        p.setBounds(0,0,500,500);
+        p.setBounds(0,0,800,500);
         p.setBackground(Color.DARK_GRAY);
         p.setLayout(new GridBagLayout());
 
-
-        // Text component
-        t = new JTextArea(500,400);
-        t.setBounds(0,0,500,400);
 
         // Create a menubar
         JMenuBar mb = new JMenuBar();
@@ -73,20 +75,43 @@ public class Editor extends JFrame implements ActionListener {
         mb.add(m1);
 
         // Panel Layout
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1;
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        p.add(t,gbc);
-//        tf = new JTextField();
+        // Text component
+        t = new JTextArea();
+
+        tf = new JTextField();
+
+        l = new JLabel();
+        l.setText("Signal Server Address");
+        l.setBackground(Color.WHITE);
+        l.setOpaque(true);
+        l.setBorder(BorderFactory.createLineBorder(Color.BLACK,1));
+        l.setHorizontalAlignment(SwingConstants.CENTER);
+
+        l2 = new JLabel();
+        l2.setText("Status : Not Connected");
+        l2.setBackground(Color.WHITE);
+        l2.setOpaque(true);
+        l2.setBorder(BorderFactory.createLineBorder(Color.BLACK,1));
+        l2.setHorizontalAlignment(SwingConstants.CENTER);
+
+        b = new JButton();
+        b.setText("Connect");
+        b.setHorizontalAlignment(SwingConstants.CENTER);
+
+        addComponent(p, t, 0, 0, 4, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH,1,80);
+        addComponent(p,l,0,1,1,1,GridBagConstraints.CENTER,GridBagConstraints.BOTH,1,1);
+        addComponent(p,tf,1,1,1,1, GridBagConstraints.CENTER, GridBagConstraints.BOTH,5,1);
+        addComponent(p,b,2,1,1,1,GridBagConstraints.CENTER,GridBagConstraints.BOTH,1,1);
+        addComponent(p,l2,3,1,1,1,GridBagConstraints.CENTER,GridBagConstraints.BOTH,1,1);
+
+        //        tf = new JTextField();
 //        tf.setBounds(490,490,500,50);
         //Add Menu and Text to Frame
         f.setJMenuBar(mb);
 //        f.add(t);
 //        p.add(tf);
         f.add(p);
-        f.setSize(500, 500);
+        f.setSize(800, 550);
         f.setLayout(null);
         f.setVisible(true);
     }
@@ -140,6 +165,13 @@ public class Editor extends JFrame implements ActionListener {
 
     public int getPosition() {
         return t.getCaretPosition();
+    }
+
+    private static void addComponent(Container container, Component component, int gridx, int gridy,
+                                     int gridwidth, int gridheight, int anchor, int fill, float weightx, float weighty) {
+        GridBagConstraints gbc = new GridBagConstraints(gridx, gridy, gridwidth, gridheight, weightx, weighty,
+                anchor, fill, insets, 0, 0);
+        container.add(component, gbc);
     }
 
     public interface KeyListener extends java.awt.event.KeyListener {
