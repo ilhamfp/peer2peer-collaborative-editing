@@ -7,9 +7,7 @@ import org.sister.p2pcollaborative.model.LocalCharacter;
 import javax.swing.event.DocumentEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class Controller{
 
@@ -18,14 +16,20 @@ public class Controller{
     private Messenger messenger;
     private CRDT crdt;
     private Editor editor;
-    private List<VersionVector> versionVectors = new ArrayList<>();
+    private Map<UUID, VersionVector> versionVectors = new HashMap<>();
     private Integer counter = 0;
+
+    private List<Character> deleteBUffer = new ArrayList<>();
 
     public CRDT getCrdt() {
         return crdt;
     }
 
-    public List<VersionVector> getVersionVectors() {
+    public Integer getCounter(){
+        return counter;
+    }
+
+    public Map getVersionVectors() {
         return versionVectors;
     }
 
@@ -35,17 +39,26 @@ public class Controller{
             LocalCharacter localCharacter = crdt.remoteInsert(character);
             editor.insertChar(localCharacter.getValue(), localCharacter.getIndex());
         } else {
-            editor.deleteChar(crdt.remoteDelete(character));
+            deleteBUffer.add(character);
         }
     }
 
-    public void increaseCounter(UUID uuid) {
-        for (VersionVector vector : versionVectors) {
-            if (vector.getSiteId().equals(uuid)) {
-                vector.increaseCounter();
-                break;
+    public void startDeleteBufferWorker() {
+        new Thread(() -> {
+            while (true) {
+                for (Character character : new ArrayList<>(deleteBUffer)) {
+                    if (versionVectors.get(character.getSiteId()).getCounter() >= character.getVersionVector().getCounter()) {
+                        editor.deleteChar(crdt.remoteDelete(character));
+                        deleteBUffer.remove(character);
+                    }
+                }
             }
-        }
+
+        }).start();
+    }
+
+    public void increaseCounter(UUID uuid) {
+        versionVectors.get(uuid).increaseCounter();
     }
 
     private Controller() {
@@ -63,7 +76,9 @@ public class Controller{
     public void run() { 
         crdt = new CRDT();
         messenger = new Messenger(port);
-//        messenger.start();
+        messenger.start();
+
+        startDeleteBufferWorker();
 
         editor = new Editor();
         editor.setKeyListener(new Editor.KeyListener() {
