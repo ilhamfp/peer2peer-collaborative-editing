@@ -158,8 +158,20 @@ public class Editor extends JFrame implements ActionListener {
             else
                 JOptionPane.showMessageDialog(f, "the user cancelled the operation");
         } else if (s.equals("Connect")) {
+            Controller controller = Controller.getInstance();
+
+            //Parse input text
+            String address = tf.getText();
+            String host = address.split(":")[0];
+            int port = Integer.parseInt(address.split(":")[1]);
+
+            controller.startClient(host, port);
+            System.out.println(host + port);
             changeConnectionStatus(true);
         } else if (s.equals("Disconnect")) {
+            changeConnectionStatus(false);
+            Controller controller = Controller.getInstance();
+            controller.disconnect();
             changeConnectionStatus(false);
         }
     }
@@ -175,15 +187,6 @@ public class Editor extends JFrame implements ActionListener {
     public void changeConnectionStatus(boolean connected){
         if (connected) {
             l2.setText("Status : Connected");
-            Controller controller = Controller.getInstance();
-
-            //Parse input text
-            String address = tf.getText();
-            String host = address.split(":")[0];
-            int port = Integer.parseInt(address.split(":")[1]);
-
-            controller.startClient(host, port);
-            System.out.println(host + port);
             b.setText("Disconnect");
         }
         else {

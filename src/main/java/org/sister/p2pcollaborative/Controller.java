@@ -93,6 +93,10 @@ public class Controller{
         messenger.startClient(host, port);
     }
 
+    public void disconnect(){
+        messenger.close();
+    }
+
     private Controller() {
 
     }

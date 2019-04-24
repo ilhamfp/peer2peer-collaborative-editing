@@ -38,6 +38,13 @@ public class Messenger {
 
     }
 
+    public void close(){
+        for ( Client c : clients) {
+            c.close();
+        }
+        server.close();
+    }
+
     public void startClient(String signalHost, int signalPort){
 
         Client signalConnect = new Client(signalHost, signalPort);
@@ -127,11 +134,21 @@ public class Messenger {
                 e.printStackTrace();
             }
         }
+
+        public void close(){
+            try {
+                socket.close();
+                outputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private class Server extends Thread {
         private Integer port;
         private ServerSocket serverSocket;
+        private Socket socket;
 
         public Server(Integer port) {
             this.port = port;
@@ -150,13 +167,22 @@ public class Messenger {
 
             while (true) {
                 try {
-                    Socket socket = serverSocket.accept();
+                    socket = serverSocket.accept();
                     System.out.println(socket.getInetAddress().getHostAddress());
                     new ClientHandler(socket).start();
 
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+            }
+        }
+
+        public void close(){
+            try {
+                serverSocket.close();
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
