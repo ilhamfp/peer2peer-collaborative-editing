@@ -13,9 +13,13 @@ import javax.swing.text.*;
 public class Editor extends JFrame implements ActionListener {
     // Text component
     JTextArea t;
+    JTextField tf;
+
     // Frame
     JFrame f;
 
+    // Panel
+    JPanel p;
     private KeyListener keyListener;
 
 
@@ -32,7 +36,7 @@ public class Editor extends JFrame implements ActionListener {
     Editor() {
         // Create a frame
         f = new JFrame("Editor");
-
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         try {
             // Set metl look and feel
             UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
@@ -42,8 +46,14 @@ public class Editor extends JFrame implements ActionListener {
         catch (Exception e) {
         }
 
+        // Create a panel
+        p = new JPanel();
+        p.setBounds(0,0,500,500);
+        p.setBackground(Color.DARK_GRAY);
+
         // Text component
-        t = new JTextArea();
+        t = new JTextArea(500,400);
+        t.setBounds(0,0,500,400);
 
         // Create a menubar
         JMenuBar mb = new JMenuBar();
@@ -60,11 +70,15 @@ public class Editor extends JFrame implements ActionListener {
         // Add File menu to menu bar
         mb.add(m1);
 
-        //Add document listener
+//        tf = new JTextField();
+//        tf.setBounds(490,490,500,50);
         //Add Menu and Text to Frame
         f.setJMenuBar(mb);
         f.add(t);
+//        p.add(tf);
+//        f.add(p);
         f.setSize(500, 500);
+        f.setLayout(null);
         f.setVisible(true);
     }
 
@@ -109,6 +123,10 @@ public class Editor extends JFrame implements ActionListener {
 
     public void insertChar(char c, int position){
         t.insert(String.valueOf(c),position);
+    }
+
+    public void deleteChar(int position){
+        t.replaceRange(null,position,position+1);
     }
 
     public int getPosition() {

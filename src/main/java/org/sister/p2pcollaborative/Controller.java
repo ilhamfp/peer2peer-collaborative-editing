@@ -27,7 +27,7 @@ public class Controller{
             LocalCharacter localCharacter = crdt.remoteInsert(character);
             editor.insertChar(localCharacter.getValue(), localCharacter.getIndex());
         } else {
-            crdt.remoteDelete(character);
+            editor.deleteChar(crdt.remoteDelete(character));
         }
     }
 
@@ -46,27 +46,42 @@ public class Controller{
     public void run() {
         crdt = new CRDT();
         messenger = new Messenger(port);
-        messenger.start();
+//        messenger.start();
 
         editor = new Editor();
         editor.setKeyListener(new Editor.KeyListener() {
 
             @Override
             public void keyTyped(KeyEvent keyEvent) {
-                System.out.printf("civa");
-//                int position = editor.getT().getCaretPosition();
-//                Character c = crdt.localInsert(editor.getT().getText().charAt(position), position);
-//                messenger.sendToClient("I" + new Gson().toJson(c));
-            }
 
+            }
             @Override
             public void keyPressed(KeyEvent keyEvent) {
-
+                int position = editor.getT().getCaretPosition();
+                int code = 	keyEvent.getKeyCode();
+                char c = keyEvent.getKeyChar();
+                if (code == keyEvent.VK_BACK_SPACE){
+                    if (position > 0) {
+                        System.out.println("Remove at " + (position - 1));
+                        messenger.sendToClient("R" + new Gson().toJson(crdt.localDelete(position-1)));
+                    }
+                } else if (code == keyEvent.VK_DELETE){
+                    if (position < editor.getT().getText().length()){
+                        System.out.println("Remove at " + (position));
+                        messenger.sendToClient("R" + new Gson().toJson(crdt.localDelete(position)));
+                    }
+                }else if (c != keyEvent.CHAR_UNDEFINED){
+                    System.out.println("Insert " + c + " at " + position);
+                    Character ch = crdt.localInsert(c, position);
+                    messenger.sendToClient("I" + new Gson().toJson(ch));
+                }
             }
 
             @Override
             public void keyReleased(KeyEvent keyEvent) {
-
+//                int position = editor.getT().getCaretPosition()-1;
+//                Character c = crdt.localInsert(editor.getT().getText().charAt(position), position);
+//                messenger.sendToClient("I" + new Gson().toJson(c));
             }
 
 //            public void insertUpdate(DocumentEvent e) {
