@@ -187,8 +187,7 @@ public class Messenger {
                             String[] splited = message.split("\\s+");
                             Client newConnection = new Client(splited[1], Integer.parseInt(splited[2]));
 
-                            Controller.getInstance().getVersionVectors()
-                                    .put(UUID.fromString(splited[3]), new VersionVector(UUID.fromString(splited[3]), 0));
+                            Controller.getInstance().getVersionVectors().put(UUID.fromString(splited[3]), new VersionVector(UUID.fromString(splited[3]), 0));
                             System.out.println(new Gson().toJson(Controller.getInstance().getVersionVectors()));
                             newConnection.start();
                             clients.add(newConnection);

@@ -6,9 +6,7 @@ import org.sister.p2pcollaborative.model.Character;
 import org.sister.p2pcollaborative.model.LocalCharacter;
 import org.sister.p2pcollaborative.model.Position;
 
-import java.net.*;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.UUID;
 
@@ -48,7 +46,7 @@ public class CRDT {
 
         Controller controller = Controller.getInstance();
 
-        Character character = new Character(value, position, siteId, new VersionVector(siteId, controller.getCounter()));
+        Character character = new Character(value, position, siteId, new VersionVector(siteId, ((VersionVector)controller.getVersionVectors().get(siteId)).getCounter() )  );
         characters.add(index, character);
         return character;
     }
@@ -66,7 +64,9 @@ public class CRDT {
 
     public int remoteDelete(Character character) {
         int index = findIndexByAbsolutePosition(character);
-        characters.remove(index);
+        if (index >= 0) {
+            characters.remove(index);
+        }
         return index;
     }
 
@@ -174,10 +174,5 @@ public class CRDT {
             }
         }
         return -1;
-    }
-
-    public static void main(String[] args) {
-
-
     }
 }
