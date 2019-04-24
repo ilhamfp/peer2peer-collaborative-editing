@@ -80,7 +80,7 @@ public class Controller{
         crdt = new CRDT();
         versionVectors.put(crdt.getSiteId(), new VersionVector(crdt.getSiteId(), 0));
         messenger = new Messenger(port);
-//        messenger.start();
+        messenger.start();
 
         startDeleteBufferWorker();
 
