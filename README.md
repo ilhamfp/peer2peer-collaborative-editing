@@ -36,6 +36,7 @@
 * Signal Server
 * Version Vector
 * Deletion Buffer
+* Laporan
 
 ---
 ## Laporan
