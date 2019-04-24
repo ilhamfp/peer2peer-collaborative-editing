@@ -155,7 +155,7 @@ public class Signal {
                             // send new connection info to all connected client
                             for (Client client : connectedClient) {
                                 try {
-                                    client.getOutputStream().writeUTF("S " + splited[0] + " " + Integer.parseInt(splited[1]) + " " + client.getSiteId());
+                                    client.getOutputStream().writeUTF("S " + splited[0] + " " + Integer.parseInt(splited[1]) + " " + splited[2]);
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
