@@ -43,7 +43,10 @@ public class CRDT {
             position = generatePositionBetween(characters.get(index-1).getPosition(),
                     characters.get(index).getPosition());
         }
-        Character character = new Character(value, position, siteId);
+
+        Controller controller = Controller.getInstance();
+
+        Character character = new Character(value, position, siteId, new VersionVector(siteId, controller.getCounter()));
         characters.add(index, character);
         return character;
     }
@@ -133,26 +136,6 @@ public class CRDT {
         return stg;
     }
 
-    public static void main(String[] args) {
-        UUID uuid1 = Generators.timeBasedGenerator().generate();
-        UUID uuid2 = Generators.timeBasedGenerator().generate();
-        List<Position> before = List.of(new Position(1, uuid1), new Position(5, uuid1));
-        List<Position> after = List.of(new Position(1, uuid2), new Position(7, uuid2));
-        CRDT crdt = new CRDT();
-
-        Character c1 = crdt.localInsert('a', 0);
-        Character c2 =crdt.localInsert('b', 1);
-        Character c3 =crdt.localInsert('c', 2);
-        List<Position> after2 = List.of(new Position(c2.getPosition().get(0).getDigit(), uuid2), new Position(6, uuid2));
-        System.out.println(new Gson().toJson(c1));
-        System.out.println(new Gson().toJson(c2));
-        System.out.println(new Gson().toJson(c3));
-        System.out.println("BATAS 2");
-        Character character = new Character('e', after2, uuid1);
-        System.out.println(new Gson().toJson(character));
-        crdt.remoteInsert(character);
-        System.out.println(crdt.findIndexByAbsolutePosition(character));
-    }
 
     private int findInsertIndex(Character character) {
         for (int i = 0; i < characters.size(); i++) {

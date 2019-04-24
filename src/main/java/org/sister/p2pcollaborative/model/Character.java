@@ -1,5 +1,7 @@
 package org.sister.p2pcollaborative.model;
 
+import org.sister.p2pcollaborative.VersionVector;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -8,11 +10,21 @@ public class Character {
     private char value;
     private List<Position> position;
     private UUID siteId;
+    private VersionVector versionVector;
 
-    public Character(char value, List<Position> position, UUID siteId) {
+    public Character(char value, List<Position> position, UUID siteId, VersionVector versionVector) {
         this.value = value;
         this.position = position;
         this.siteId = siteId;
+        this.versionVector = versionVector;
+    }
+
+    public VersionVector getVersionVector() {
+        return versionVector;
+    }
+
+    public void setVersionVector(VersionVector versionVector) {
+        this.versionVector = versionVector;
     }
 
     public char getValue() {
