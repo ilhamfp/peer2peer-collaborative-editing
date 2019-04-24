@@ -97,7 +97,7 @@ public class Controller{
                 int code = 	keyEvent.getKeyCode();
                 char c = keyEvent.getKeyChar();
 
-                counter += 1;
+                counter++;
                 versionVectors.get(crdt.getSiteId()).increaseCounter();
 
                 if (code == keyEvent.VK_BACK_SPACE){
