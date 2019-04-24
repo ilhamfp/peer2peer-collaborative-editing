@@ -89,6 +89,10 @@ public class Controller{
         versionVectors.get(uuid).increaseCounter();
     }
 
+    public void startClient(String host, int port){
+        messenger.startClient(host, port);
+    }
+
     private Controller() {
 
     }

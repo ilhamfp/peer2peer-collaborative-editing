@@ -17,9 +17,6 @@ public class Messenger {
     private String serverHost;
     private int serverPort;
 
-    private String signalHost = "192.168.43.242";
-    private int signalPort = 8885;
-
     public Messenger(int port) {
         clients = new ArrayList<>();
         serverPort = port;
@@ -39,6 +36,10 @@ public class Messenger {
         server = new Server(serverPort);
         server.start();
 
+    }
+
+    public void startClient(String signalHost, int signalPort){
+
         Client signalConnect = new Client(signalHost, signalPort);
         signalConnect.start();
 
@@ -55,7 +56,6 @@ public class Messenger {
             e.printStackTrace();
         }
     }
-
 
     public void sendToClient(String str) {
         for (Messenger.Client client : clients) {
