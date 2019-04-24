@@ -40,8 +40,12 @@
 
 ---
 ## Laporan
-### Cara Kerja Program
-TBD
+### Cara Kerja Program 
+* Setiap node akan saling terhubung satu sama lain dengan bantuan signal server
+* Pada setiap text editor, program akan mendeteksi apabila ada karakter yang diketik (insert) atau dihapus (delete)
+* Apabila program mendeteksi salah satu dari operasi di atas, program akan meng-*update* cdrt dari node tersebut, kemudian mem-*broadcast* operasi tersebut ke seluruh node lainnya yang terhubung dengan node yang melakukan operasi
+* Apabila node menerima informasi operasi dari node lain, host akan meng-*update* CDRT berdasarkan operasi yang didapat. Kemudian  program akan meng-*apply* operasi tersebut ke *text editor* untuk menampilkan perubahan yang baru saja terjadi
+* Khusus untuk penerimaan operasi *delete*, sebelum operasi tersebut dilakukan  operasi akan disimpan dulu di *delete buffer* hingga karakter yang terlibat dengan operasi tersebut sudah diterima oleh program
 
 ### Arsitektur Program
 Program ini secara garis besar terdiri dari:
