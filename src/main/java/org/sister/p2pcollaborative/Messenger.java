@@ -5,8 +5,10 @@ import com.google.gson.Gson;
 import org.sister.p2pcollaborative.model.Character;
 
 import java.io.*;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -17,7 +19,7 @@ public class Messenger {
     private List<Client> clients = new ArrayList<>();
     private Server server;
 
-    private String serverHost = "192.168.43.145";
+    private String serverHost;
     private int serverPort;
 
     private String signalHost = "192.168.43.145";
@@ -37,6 +39,13 @@ public class Messenger {
     }
 
     public void start(){
+        InetAddress localhost = null;
+        try {
+            localhost = InetAddress.getLocalHost();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        serverHost = localhost.getHostAddress().trim();
         server = new Server(serverPort);
         server.start();
 
