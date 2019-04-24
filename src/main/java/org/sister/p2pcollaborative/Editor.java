@@ -50,11 +50,12 @@ public class Editor extends JFrame implements ActionListener {
             MetalLookAndFeel.setCurrentTheme(new OceanTheme());
         }
         catch (Exception e) {
+
         }
+
 
         // Create a panel
         p = new JPanel();
-        p.setBounds(0,0,800,500);
         p.setBackground(Color.DARK_GRAY);
         p.setLayout(new GridBagLayout());
 
@@ -76,8 +77,8 @@ public class Editor extends JFrame implements ActionListener {
 
         // Panel Layout
         // Text component
-        t = new JTextArea();
-
+        t = new JTextArea(40,100);
+        t.setLineWrap(true);
         tf = new JTextField();
 
         l = new JLabel();
@@ -111,9 +112,12 @@ public class Editor extends JFrame implements ActionListener {
         f.setJMenuBar(mb);
 //        f.add(t);
 //        p.add(tf);
-        f.add(p);
+//        f.add(p);
         f.setSize(800, 550);
-        f.setLayout(null);
+        f.setLayout(new BorderLayout());
+        f.add(p, BorderLayout.CENTER);
+//        f.setLayout(null);
+        f.pack();
         f.setVisible(true);
     }
 

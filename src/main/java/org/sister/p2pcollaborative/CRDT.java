@@ -6,7 +6,9 @@ import org.sister.p2pcollaborative.model.Character;
 import org.sister.p2pcollaborative.model.LocalCharacter;
 import org.sister.p2pcollaborative.model.Position;
 
+import java.net.*;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.UUID;
 
@@ -172,5 +174,10 @@ public class CRDT {
             }
         }
         return -1;
+    }
+
+    public static void main(String[] args) {
+
+
     }
 }

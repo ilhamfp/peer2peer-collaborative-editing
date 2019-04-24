@@ -76,7 +76,7 @@ public class Controller{
     public void run() { 
         crdt = new CRDT();
         messenger = new Messenger(port);
-        messenger.start();
+//        messenger.start();
 
         startDeleteBufferWorker();
 

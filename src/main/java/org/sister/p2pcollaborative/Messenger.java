@@ -5,11 +5,9 @@ import com.google.gson.Gson;
 import org.sister.p2pcollaborative.model.Character;
 
 import java.io.*;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,13 +37,7 @@ public class Messenger {
     }
 
     public void start(){
-        InetAddress localhost = null;
-        try {
-            localhost = InetAddress.getLocalHost();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        serverHost = localhost.getHostAddress().trim();
+        serverHost = getIP();
         server = new Server(serverPort);
         server.start();
 
@@ -75,6 +67,29 @@ public class Messenger {
                 e.printStackTrace();
             }
         }
+    }
+
+    private String getIP(){
+        String ip;
+        try {
+            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            while (interfaces.hasMoreElements()) {
+                NetworkInterface iface = interfaces.nextElement();
+                // filters out 127.0.0.1 and inactive interfaces
+                if (iface.isLoopback() || !iface.isUp())
+                    continue;
+
+                Enumeration<InetAddress> addresses = iface.getInetAddresses();
+                while(addresses.hasMoreElements()) {
+                    InetAddress addr = addresses.nextElement();
+                    ip = addr.getHostAddress();
+                    return ip;
+                }
+            }
+        } catch (SocketException e) {
+            throw new RuntimeException(e);
+        }
+        return "127.0.0.1";
     }
 
 
