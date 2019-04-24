@@ -33,21 +33,46 @@ public class Controller{
         return versionVectors;
     }
 
-    public void onMessage(String operation, Character character) {
-        if (operation.equalsIgnoreCase("I")) {
-            increaseCounter(character.getSiteId());
+    public void testDeleteBuffer(String operation, Character character) {
+        new Thread(() -> {
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
             LocalCharacter localCharacter = crdt.remoteInsert(character);
             editor.insertChar(localCharacter.getValue(), localCharacter.getIndex());
+            increaseCounter(character.getSiteId());
+        }).start();
+    }
+
+    public void onMessage(String operation, Character character) {
+        if (operation.equalsIgnoreCase("I")) {
+
+            // test delete buffer by delaying insert
+//            testDeleteBuffer(operation, character);
+
+            // normal
+            LocalCharacter localCharacter = crdt.remoteInsert(character);
+            editor.insertChar(localCharacter.getValue(), localCharacter.getIndex());
+            increaseCounter(character.getSiteId());
         } else {
             deleteBUffer.add(character);
         }
+
+
     }
 
     public void startDeleteBufferWorker() {
         new Thread(() -> {
             while (true) {
                 for (Character character : new ArrayList<>(deleteBUffer)) {
+                    System.out.println("LUAR: " + (new Gson().toJson(character)));
+                    System.out.println(versionVectors.get(character.getSiteId()).getCounter());
+                    System.out.println(character.getVersionVector().getCounter());
                     if (versionVectors.get(character.getSiteId()).getCounter() >= character.getVersionVector().getCounter()) {
+                        System.out.println(new Gson().toJson(character));
                         int index = crdt.remoteDelete(character);
                         if (index >= 0){
                             editor.deleteChar(index);
