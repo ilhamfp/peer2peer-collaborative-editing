@@ -38,6 +38,7 @@ public class Messenger {
 
     public void start(){
         serverHost = getIP();
+        System.out.println(serverHost);
         server = new Server(serverPort);
         server.start();
 

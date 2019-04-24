@@ -33,8 +33,27 @@ public class Controller{
         return versionVectors;
     }
 
+    public void testDeleteBuffer(String operation, Character character) {
+        new Thread(() -> {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            increaseCounter(character.getSiteId());
+            LocalCharacter localCharacter = crdt.remoteInsert(character);
+            editor.insertChar(localCharacter.getValue(), localCharacter.getIndex());
+
+        }).start();
+    }
+
     public void onMessage(String operation, Character character) {
         if (operation.equalsIgnoreCase("I")) {
+
+            // test delete buffer by delaying insert
+//            testDeleteBuffer(operation, character);
+
+            // normal
             increaseCounter(character.getSiteId());
             LocalCharacter localCharacter = crdt.remoteInsert(character);
             editor.insertChar(localCharacter.getValue(), localCharacter.getIndex());
@@ -80,7 +99,7 @@ public class Controller{
         crdt = new CRDT();
         versionVectors.put(crdt.getSiteId(), new VersionVector(crdt.getSiteId(), 0));
         messenger = new Messenger(port);
-//        messenger.start();
+        messenger.start();
 
         startDeleteBufferWorker();
 
