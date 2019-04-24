@@ -17,7 +17,7 @@ public class Messenger {
     private String serverHost;
     private int serverPort;
 
-    private String signalHost = "192.168.43.145";
+    private String signalHost = "192.168.43.242";
     private int signalPort = 8885;
 
     public Messenger(int port) {
