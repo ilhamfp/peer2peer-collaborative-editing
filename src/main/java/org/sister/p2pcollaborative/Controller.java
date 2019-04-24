@@ -48,7 +48,10 @@ public class Controller{
             while (true) {
                 for (Character character : new ArrayList<>(deleteBUffer)) {
                     if (versionVectors.get(character.getSiteId()).getCounter() >= character.getVersionVector().getCounter()) {
-                        editor.deleteChar(crdt.remoteDelete(character));
+                        int index = crdt.remoteDelete(character);
+                        if (index >= 0){
+                            editor.deleteChar(index);
+                        }
                         deleteBUffer.remove(character);
                     }
                 }
@@ -75,6 +78,7 @@ public class Controller{
 
     public void run() { 
         crdt = new CRDT();
+        versionVectors.put(crdt.getSiteId(), new VersionVector(crdt.getSiteId(), 0));
         messenger = new Messenger(port);
         messenger.start();
 
@@ -92,6 +96,10 @@ public class Controller{
                 int position = editor.getT().getCaretPosition();
                 int code = 	keyEvent.getKeyCode();
                 char c = keyEvent.getKeyChar();
+
+                counter += 1;
+                versionVectors.get(crdt.getSiteId()).increaseCounter();
+
                 if (code == keyEvent.VK_BACK_SPACE){
                     if (position > 0) {
                         System.out.println("Remove at " + (position - 1));

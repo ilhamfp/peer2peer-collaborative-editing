@@ -46,7 +46,7 @@ public class CRDT {
 
         Controller controller = Controller.getInstance();
 
-        Character character = new Character(value, position, siteId, new VersionVector(siteId, controller.getCounter()));
+        Character character = new Character(value, position, siteId, new VersionVector(siteId, ((VersionVector)controller.getVersionVectors().get(siteId)).getCounter() )  );
         characters.add(index, character);
         return character;
     }
@@ -64,7 +64,9 @@ public class CRDT {
 
     public int remoteDelete(Character character) {
         int index = findIndexByAbsolutePosition(character);
-        characters.remove(index);
+        if (index >= 0) {
+            characters.remove(index);
+        }
         return index;
     }
 
