@@ -43,7 +43,16 @@
 TBD
 
 ### Arsitektur Program
-TBD
+Program ini secara garis besar terdiri dari:
+* Controller (Controller.java) - bagian utama dari program yang berfungsi untuk mengatur jalannya program.
+* Conflict-free Replicated Data Types (CRDT.java) - data struktur utama yang mendasari cara kerja program ini. Data struktur CRDT ini telah memungkinkan kami untuk mengembangkan sebuah platform penyunting teks peer-to-peer.
+* Model (Character.java, LocalCharacter.java, Position.java) - tipe dasar data yang kami gunakan dalam berkomunikasi antar node dalam koneksi.
+* Editor (Editor.java) - graphical user interface (GUI) yang kami gunakan untuk berinteraksi dengan program.
+* Messenger (Messenger.java) - bagian program yang berfungsi untuk berkomunikasi dengan node lain dalam koneksi.
+* Version Vector (VersionVector.java) - bagian program yang berfungsi untuk mencatat versi karakter yang sudah diketik agar terhindar dari kasus di mana operasi delete dijalankan pada karakter yang belum ada.
+* Signal (Signal.java) - bagian program yang berfungsi untuk melakukan inisialisasi koneksi kepada seluruh node yang ada pada koneksi.
+
+<p align="center"> <img src="doc/arsitektur.png" alt="arsitektur" width="600"/> </p>
 
 ### Struktur Data
 TBD
@@ -52,7 +61,12 @@ TBD
 TBD
 
 ### Kasus Uji
-TBD
+1. Input karakter
+2. Delete karakter
+3. Input karakter dari 2 node berbeda secara bersamaan
+4. Delete karakter dari 2 node berbeda secara bersamaan (Tes Idempoten)
+5. Input karakter dan delete karakter pada indeks yang sama dari 2 node berbeda (Tes Komutatif)
+6. Delete karakter pada node di mana karakter tersebut belum sampai (Tes Delete Buffer)
 
 ### Screenshot/Video Program
 TBD
