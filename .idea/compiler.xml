@@ -10,9 +10,5 @@
         <module name="peer-to-peer-collaborative" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="peer-to-peer-collaborative" target="11" />
-      <module name="peer2peer-collaborative-editing" target="11" />
-    </bytecodeTargetLevel>
   </component>
 </project>

@@ -9,25 +9,42 @@ import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Controller{
 
     private static Controller controller;
-    private String host = "192.168.43.49";
-    private int port = 8884;
+    private int port = 8883;
     private Messenger messenger;
     private CRDT crdt;
     private Editor editor;
+    private List<VersionVector> versionVectors = new ArrayList<>();
+    private Integer counter = 0;
 
-    private List<String> hosts = new ArrayList<>();
-    private List<Integer> ports = new ArrayList<>();
+    public CRDT getCrdt() {
+        return crdt;
+    }
+
+    public List<VersionVector> getVersionVectors() {
+        return versionVectors;
+    }
 
     public void onMessage(String operation, Character character) {
         if (operation.equalsIgnoreCase("I")) {
+            increaseCounter(character.getSiteId());
             LocalCharacter localCharacter = crdt.remoteInsert(character);
             editor.insertChar(localCharacter.getValue(), localCharacter.getIndex());
         } else {
             editor.deleteChar(crdt.remoteDelete(character));
+        }
+    }
+
+    public void increaseCounter(UUID uuid) {
+        for (VersionVector vector : versionVectors) {
+            if (vector.getSiteId().equals(uuid)) {
+                vector.increaseCounter();
+                break;
+            }
         }
     }
 

@@ -9,6 +9,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Messenger {
 
@@ -16,7 +17,7 @@ public class Messenger {
     private List<Client> clients = new ArrayList<>();
     private Server server;
 
-    private String serverHost = "192.168.43.49";
+    private String serverHost = "192.168.43.145";
     private int serverPort;
 
     private String signalHost = "192.168.43.145";
@@ -49,7 +50,8 @@ public class Messenger {
         }
 
         try {
-            signalConnect.getOutputStream().writeUTF(serverHost + " " + String.valueOf(serverPort));
+            signalConnect.getOutputStream().writeUTF(serverHost + " " + String.valueOf(serverPort) + " "
+                    + Controller.getInstance().getCrdt().getSiteId());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -160,6 +162,10 @@ public class Messenger {
                             // message from signal
                             String[] splited = message.split("\\s+");
                             Client newConnection = new Client(splited[1], Integer.parseInt(splited[2]));
+
+                            Controller.getInstance().getVersionVectors()
+                                    .add(new VersionVector(UUID.fromString(splited[3]), 0));
+                            System.out.println(new Gson().toJson(Controller.getInstance().getVersionVectors()));
                             newConnection.start();
                             clients.add(newConnection);
                         } else {
