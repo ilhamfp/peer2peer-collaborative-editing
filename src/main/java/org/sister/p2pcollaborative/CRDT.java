@@ -90,16 +90,16 @@ public class CRDT {
         }
         else if (id2.getDigit() - id1.getDigit() == 1) {
             newPos.add(id1);
-            return findPositionBetween(pos1.subList(1, pos1.size()), new ArrayList<>(), newPos, level+1);
+            return findPositionBetween(pos1.size() == 0 ? new ArrayList<>() : pos1.subList(1, pos1.size()), new ArrayList<>(), newPos, level+1);
         }
         else if (id1.getDigit().equals(id2.getDigit())) {
             if (id1.getSiteId().compareTo(id2.getSiteId()) < 0) {
                 newPos.add(id1);
-                return findPositionBetween(pos1.subList(1, pos1.size()), new ArrayList<>(), newPos, level+1);
+                return findPositionBetween(pos1.size() == 0 ? new ArrayList<>() : pos1.subList(1, pos1.size()), new ArrayList<>(), newPos, level+1);
             }
             else if (id1.getSiteId().compareTo(id2.getSiteId()) == 0) {
                 newPos.add(id1);
-                return findPositionBetween(pos1.subList(1, pos1.size()), pos2.subList(1, pos2.size()), newPos, level+1);
+                return findPositionBetween(pos1.size() == 0 ? new ArrayList<>() : pos1.subList(1, pos1.size()), pos2.subList(1, pos2.size()), newPos, level+1);
             }
         }
         return newPos;
