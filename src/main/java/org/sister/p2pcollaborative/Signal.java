@@ -4,68 +4,33 @@ package org.sister.p2pcollaborative;
 import com.google.gson.Gson;
 import org.sister.p2pcollaborative.model.Character;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.EOFException;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Messenger {
+public class Signal {
 
-    private static Messenger messenger;
-    private List<Client> clients = new ArrayList<>();
-    private Server server;
-
-    private String serverHost = "localhost";
-    private int serverPort;
-
-    private String signalHost = "localhost";
-    private int signalPort = 8885;
-
-    public Messenger(int port) {
-        clients = new ArrayList<>();
-        serverPort = port;
-
+    private static Signal signal;
+    private List<Client> connectedClient = new ArrayList<>();
+    private Signal() {
+        connectedClient = new ArrayList<>();
     }
 
-    public static Messenger getInstance(int port) {
-        if (messenger == null) {
-            messenger = new Messenger(port);
+    public static Signal getInstance() {
+        if (signal == null) {
+            signal = new Signal();
         }
-        return messenger;
+        return signal;
     }
 
-    public void start(){
-        server = new Server(serverPort);
-        server.start();
-
-        Client signalConnect = new Client(signalHost, signalPort);
-        signalConnect.start();
-
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            signalConnect.getOutputStream().writeUTF(serverHost + " " + String.valueOf(serverPort));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void startSignal(Integer port) {
+        new Server(port).start();
     }
-
-
-    public void sendToClient(String str) {
-        for (Messenger.Client client : clients) {
-            try {
-                client.getOutputStream().writeUTF(str);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
 
     private class Client extends Thread {
         private String address;
@@ -81,6 +46,21 @@ public class Messenger {
             return outputStream;
         }
 
+        public String getAddress() {
+            return address;
+        }
+
+        public void setAddress(String address) {
+            this.address = address;
+        }
+
+        public Integer getPort() {
+            return port;
+        }
+
+        public void setPort(Integer port) {
+            this.port = port;
+        }
 
         public Client(String address, Integer port) {
             this.address = address;
@@ -113,7 +93,7 @@ public class Messenger {
             super.run();
             try {
                 serverSocket = new ServerSocket(port);
-                System.out.println("Server started at port " + String.valueOf(serverPort));
+                System.out.println("Signal started at port " + String.valueOf(port));
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -122,7 +102,7 @@ public class Messenger {
             while (true) {
                 try {
                     Socket socket = serverSocket.accept();
-                    System.out.println(socket.getInetAddress().getHostAddress());
+                    System.out.println("NEW CONNECTION: " + socket.getInetAddress().getHostAddress() + ":" + String.valueOf(socket.getPort()));
                     new ClientHandler(socket).start();
 
                 } catch (IOException e) {
@@ -153,19 +133,38 @@ public class Messenger {
                         message = null;
                     }
                     if (message != null) {
-                        System.out.println("GET NEW MESSAGE: " + message);
-                        Controller controller = Controller.getInstance();
-                        String operation = message.substring(0,1);
-                        if (operation.equals("S")) {
-                            // message from signal
-                            String[] splited = message.split("\\s+");
-                            Client newConnection = new Client(splited[1], Integer.parseInt(splited[2]));
-                            newConnection.start();
-                            clients.add(newConnection);
-                        } else {
-                            Character character = new Gson().fromJson(message.substring(1), Character.class);
-                            controller.onMessage(operation, character);
+                        System.out.println("SERVER OF NEW CONENCTION: " + message);
+                        String[] splited = message.split("\\s+");
+                        Client newConnection = new Client(splited[0], Integer.parseInt(splited[1]));
+                        newConnection.start();
+
+                        try {
+                            Thread.sleep(3000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
+
+                        if (connectedClient.size() != 0) {
+                            // send new connection info to all connected client
+                            for (Client client : connectedClient) {
+                                try {
+                                    client.getOutputStream().writeUTF("S " + splited[0] + " " + Integer.parseInt(splited[1]));
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            // send connected client info to new connection
+                            for (Client client : connectedClient) {
+                                try {
+                                    newConnection.getOutputStream().writeUTF("S " + client.getAddress() + " " + client.getPort());
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+
+                        connectedClient.add(newConnection);
 
                     }
                     else {
@@ -179,14 +178,8 @@ public class Messenger {
     }
 
     public static void main(String[] args) {
-//        Messenger messenger = Messenger.getInstance();
-//        messenger.startServer(8884);
-//        try {
-//            Thread.sleep(3000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        messenger.startClient("127.0.0.1", 8884);
+        Signal signal = Signal.getInstance();
+        signal.startSignal(8885);
     }
 
 }
