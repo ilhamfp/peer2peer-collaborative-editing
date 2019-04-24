@@ -16,10 +16,10 @@ public class Messenger {
     private List<Client> clients = new ArrayList<>();
     private Server server;
 
-    private String serverHost = "localhost";
+    private String serverHost = "192.168.43.49";
     private int serverPort;
 
-    private String signalHost = "localhost";
+    private String signalHost = "192.168.43.242";
     private int signalPort = 8885;
 
     public Messenger(int port) {

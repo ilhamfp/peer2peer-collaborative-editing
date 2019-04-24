@@ -16,12 +16,12 @@ public class Editor extends JFrame implements ActionListener {
     // Frame
     JFrame f;
 
-    private DocumentListener documentListener;
+    private KeyListener keyListener;
 
 
-    public void setDocumentListener(DocumentListener documentListener) {
-        this.documentListener = documentListener;
-        t.getDocument().addDocumentListener(documentListener);
+    public void setKeyListener(KeyListener keyListener) {
+        this.keyListener = keyListener;
+        t.addKeyListener(keyListener);
     }
 
     public JTextArea getT() {
@@ -115,7 +115,7 @@ public class Editor extends JFrame implements ActionListener {
         return t.getCaretPosition();
     }
 
-    public interface DocumentListener extends javax.swing.event.DocumentListener {
+    public interface KeyListener extends java.awt.event.KeyListener {
 
     }
 }
