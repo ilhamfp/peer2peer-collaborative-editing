@@ -96,24 +96,9 @@ public class Controller{
 
             @Override
             public void keyReleased(KeyEvent keyEvent) {
-//                int position = editor.getT().getCaretPosition()-1;
-//                Character c = crdt.localInsert(editor.getT().getText().charAt(position), position);
-//                messenger.sendToClient("I" + new Gson().toJson(c));
+
             }
 
-//            public void insertUpdate(DocumentEvent e) {
-//                System.out.println("Woyowuo");
-//                int position = editor.getT().getCaretPosition();
-//                Character c = crdt.localInsert(editor.getT().getText().charAt(position), position);
-//                sendToClient("I" + new Gson().toJson(c));
-//            }
-//            public void removeUpdate(DocumentEvent e) {
-////                int position = editor.getPosition()-1;
-////                sendToClient("R" + new Gson().toJson(crdt.localDelete(position)));
-//            }
-//            public void changedUpdate(DocumentEvent e) {
-//
-//            }
         });
     }
 

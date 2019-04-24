@@ -88,7 +88,7 @@ public class Editor extends JFrame implements ActionListener {
         l.setHorizontalAlignment(SwingConstants.CENTER);
 
         l2 = new JLabel();
-        l2.setText("Status : Not Connected");
+        l2.setText("Status : Disconnected");
         l2.setBackground(Color.WHITE);
         l2.setOpaque(true);
         l2.setBorder(BorderFactory.createLineBorder(Color.BLACK,1));
@@ -97,6 +97,7 @@ public class Editor extends JFrame implements ActionListener {
         b = new JButton();
         b.setText("Connect");
         b.setHorizontalAlignment(SwingConstants.CENTER);
+        b.addActionListener(this);
 
         addComponent(p, t, 0, 0, 4, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH,1,80);
         addComponent(p,l,0,1,1,1,GridBagConstraints.CENTER,GridBagConstraints.BOTH,1,1);
@@ -152,6 +153,10 @@ public class Editor extends JFrame implements ActionListener {
             // If the user cancelled the operation
             else
                 JOptionPane.showMessageDialog(f, "the user cancelled the operation");
+        } else if (s.equals("Connect")) {
+            changeConnectionStatus(true);
+        } else if (s.equals("Disconnect")) {
+            changeConnectionStatus(false);
         }
     }
 
@@ -163,6 +168,16 @@ public class Editor extends JFrame implements ActionListener {
         t.replaceRange(null,position,position+1);
     }
 
+    public void changeConnectionStatus(boolean connected){
+        if (connected) {
+            l2.setText("Status : Connected");
+            b.setText("Disconnect");
+        }
+        else {
+            l2.setText("Status : Disconnected");
+            b.setText("Connect");
+        }
+    }
     public int getPosition() {
         return t.getCaretPosition();
     }
