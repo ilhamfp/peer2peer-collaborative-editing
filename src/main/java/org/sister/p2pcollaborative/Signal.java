@@ -12,6 +12,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Signal {
 
@@ -37,6 +38,11 @@ public class Signal {
         private Integer port;
         private Socket socket;
         private DataOutputStream outputStream;
+        private UUID siteId;
+
+        public UUID getSiteId() {
+            return siteId;
+        }
 
         public Socket getSocket() {
             return socket;
@@ -62,9 +68,10 @@ public class Signal {
             this.port = port;
         }
 
-        public Client(String address, Integer port) {
+        public Client(String address, Integer port, UUID siteId) {
             this.address = address;
             this.port = port;
+            this.siteId = siteId;
         }
 
         @Override
@@ -135,7 +142,7 @@ public class Signal {
                     if (message != null) {
                         System.out.println("SERVER OF NEW CONENCTION: " + message);
                         String[] splited = message.split("\\s+");
-                        Client newConnection = new Client(splited[0], Integer.parseInt(splited[1]));
+                        Client newConnection = new Client(splited[0], Integer.parseInt(splited[1]), UUID.fromString(splited[2]));
                         newConnection.start();
 
                         try {
@@ -148,7 +155,7 @@ public class Signal {
                             // send new connection info to all connected client
                             for (Client client : connectedClient) {
                                 try {
-                                    client.getOutputStream().writeUTF("S " + splited[0] + " " + Integer.parseInt(splited[1]));
+                                    client.getOutputStream().writeUTF("S " + splited[0] + " " + Integer.parseInt(splited[1]) + " " + splited[2]);
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
@@ -157,7 +164,8 @@ public class Signal {
                             // send connected client info to new connection
                             for (Client client : connectedClient) {
                                 try {
-                                    newConnection.getOutputStream().writeUTF("S " + client.getAddress() + " " + client.getPort());
+                                    newConnection.getOutputStream().writeUTF("S " + client.getAddress() + " "
+                                            + client.getPort() + " " + client.getSiteId());
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }

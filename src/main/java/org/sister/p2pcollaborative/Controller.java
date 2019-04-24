@@ -9,25 +9,42 @@ import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Controller{
 
     private static Controller controller;
-    private String host = "192.168.43.49";
-    private int port = 8884;
+    private int port = 8883;
     private Messenger messenger;
     private CRDT crdt;
     private Editor editor;
+    private List<VersionVector> versionVectors = new ArrayList<>();
+    private Integer counter = 0;
 
-    private List<String> hosts = new ArrayList<>();
-    private List<Integer> ports = new ArrayList<>();
+    public CRDT getCrdt() {
+        return crdt;
+    }
+
+    public List<VersionVector> getVersionVectors() {
+        return versionVectors;
+    }
 
     public void onMessage(String operation, Character character) {
         if (operation.equalsIgnoreCase("I")) {
+            increaseCounter(character.getSiteId());
             LocalCharacter localCharacter = crdt.remoteInsert(character);
             editor.insertChar(localCharacter.getValue(), localCharacter.getIndex());
         } else {
-            crdt.remoteDelete(character);
+            editor.deleteChar(crdt.remoteDelete(character));
+        }
+    }
+
+    public void increaseCounter(UUID uuid) {
+        for (VersionVector vector : versionVectors) {
+            if (vector.getSiteId().equals(uuid)) {
+                vector.increaseCounter();
+                break;
+            }
         }
     }
 
@@ -43,30 +60,45 @@ public class Controller{
         return controller;
     }
 
-    public void run() {
+    public void run() { 
         crdt = new CRDT();
         messenger = new Messenger(port);
-        messenger.start();
+//        messenger.start();
 
         editor = new Editor();
         editor.setKeyListener(new Editor.KeyListener() {
 
             @Override
             public void keyTyped(KeyEvent keyEvent) {
-                System.out.printf("civa");
-//                int position = editor.getT().getCaretPosition();
-//                Character c = crdt.localInsert(editor.getT().getText().charAt(position), position);
-//                messenger.sendToClient("I" + new Gson().toJson(c));
-            }
 
+            }
             @Override
             public void keyPressed(KeyEvent keyEvent) {
-
+                int position = editor.getT().getCaretPosition();
+                int code = 	keyEvent.getKeyCode();
+                char c = keyEvent.getKeyChar();
+                if (code == keyEvent.VK_BACK_SPACE){
+                    if (position > 0) {
+                        System.out.println("Remove at " + (position - 1));
+                        messenger.sendToClient("R" + new Gson().toJson(crdt.localDelete(position-1)));
+                    }
+                } else if (code == keyEvent.VK_DELETE){
+                    if (position < editor.getT().getText().length()){
+                        System.out.println("Remove at " + (position));
+                        messenger.sendToClient("R" + new Gson().toJson(crdt.localDelete(position)));
+                    }
+                }else if (c != keyEvent.CHAR_UNDEFINED){
+                    System.out.println("Insert " + c + " at " + position);
+                    Character ch = crdt.localInsert(c, position);
+                    messenger.sendToClient("I" + new Gson().toJson(ch));
+                }
             }
 
             @Override
             public void keyReleased(KeyEvent keyEvent) {
-
+//                int position = editor.getT().getCaretPosition()-1;
+//                Character c = crdt.localInsert(editor.getT().getText().charAt(position), position);
+//                messenger.sendToClient("I" + new Gson().toJson(c));
             }
 
 //            public void insertUpdate(DocumentEvent e) {

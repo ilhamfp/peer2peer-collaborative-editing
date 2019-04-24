@@ -3,12 +3,21 @@ package org.sister.p2pcollaborative;
 import java.util.UUID;
 
 public class VersionVector {
-    private int counter;
-    private UUID siteID;
 
-    public VersionVector(int counter, UUID siteID) {
+    private UUID siteId;
+    private int counter;
+
+    public VersionVector(UUID siteId, int counter) {
+        this.siteId = siteId;
         this.counter = counter;
-        this.siteID = siteID;
+    }
+
+    public UUID getSiteId() {
+        return siteId;
+    }
+
+    public void setSiteId(UUID siteId) {
+        this.siteId = siteId;
     }
 
     public int getCounter() {
@@ -19,11 +28,7 @@ public class VersionVector {
         this.counter = counter;
     }
 
-    public UUID getSiteID() {
-        return siteID;
-    }
-
-    public void setSiteID(UUID siteID) {
-        this.siteID = siteID;
+    public void increaseCounter() {
+        this.counter++;
     }
 }
