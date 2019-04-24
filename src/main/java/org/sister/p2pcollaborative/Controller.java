@@ -43,10 +43,10 @@ public class Controller{
         return controller;
     }
 
-    public void run() {
+    public void run() { 
         crdt = new CRDT();
         messenger = new Messenger(port);
-//        messenger.start();
+        messenger.start();
 
         editor = new Editor();
         editor.setKeyListener(new Editor.KeyListener() {

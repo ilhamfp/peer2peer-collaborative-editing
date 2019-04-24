@@ -50,6 +50,8 @@ public class Editor extends JFrame implements ActionListener {
         p = new JPanel();
         p.setBounds(0,0,500,500);
         p.setBackground(Color.DARK_GRAY);
+        p.setLayout(new GridBagLayout());
+
 
         // Text component
         t = new JTextArea(500,400);
@@ -70,13 +72,20 @@ public class Editor extends JFrame implements ActionListener {
         // Add File menu to menu bar
         mb.add(m1);
 
+        // Panel Layout
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        p.add(t,gbc);
 //        tf = new JTextField();
 //        tf.setBounds(490,490,500,50);
         //Add Menu and Text to Frame
         f.setJMenuBar(mb);
-        f.add(t);
+//        f.add(t);
 //        p.add(tf);
-//        f.add(p);
+        f.add(p);
         f.setSize(500, 500);
         f.setLayout(null);
         f.setVisible(true);
