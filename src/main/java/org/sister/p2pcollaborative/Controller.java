@@ -71,13 +71,13 @@ public class Controller{
         editor.setDocumentListener(new Editor.DocumentListener() {
 
             public void insertUpdate(DocumentEvent e) {
-                int position = editor.getT().getCaretPosition();
-                Character c = crdt.localInsert(editor.getT().getText().charAt(position), position);
-                sendToClient("I" + new Gson().toJson(c));
+//                int position = editor.getT().getCaretPosition();
+//                Character c = crdt.localInsert(editor.getT().getText().charAt(position), position);
+//                sendToClient("I" + new Gson().toJson(c));
             }
             public void removeUpdate(DocumentEvent e) {
-                int position = editor.getPosition()-1;
-                sendToClient("R" + new Gson().toJson(crdt.localDelete(position)));
+//                int position = editor.getPosition()-1;
+//                sendToClient("R" + new Gson().toJson(crdt.localDelete(position)));
 
             }
             public void changedUpdate(DocumentEvent e) {

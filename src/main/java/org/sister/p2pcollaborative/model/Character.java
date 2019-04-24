@@ -6,10 +6,10 @@ import java.util.UUID;
 
 public class Character {
     private char value;
-    private List<Integer> position;
+    private List<Position> position;
     private UUID siteId;
 
-    public Character(char value, List<Integer> position, UUID siteId) {
+    public Character(char value, List<Position> position, UUID siteId) {
         this.value = value;
         this.position = position;
         this.siteId = siteId;
@@ -31,11 +31,11 @@ public class Character {
         this.siteId = siteId;
     }
 
-    public List<Integer> getPosition() {
+    public List<Position> getPosition() {
         return position;
     }
 
-    public void setPosition(List<Integer> position) {
+    public void setPosition(List<Position> position) {
         this.position = position;
     }
 
@@ -60,22 +60,6 @@ public class Character {
         return result;
     }
 
-    public static List<Integer> generatePositionBetween(List<Integer> before, List<Integer> after) {
-        Integer maxDigit = Math.max(before.size(), after.size());
-        Long beforeLong = arrayDigitsToLong(before, maxDigit);
-        Long afterLong = arrayDigitsToLong(after, maxDigit);
-        if (Math.abs(afterLong - beforeLong) == 1) {
-            afterLong *= 10;
-            beforeLong *= 10;
-        }
-        if (before.size() == 0) {
-            return longToArrayDigits(afterLong / 2);
-        }
-        else if (after.size() == 0) {
-            return longToArrayDigits(beforeLong + beforeLong / 2);
-        }
-        else {
-            return longToArrayDigits((beforeLong + afterLong) / 2);
-        }
-    }
+
+
 }
