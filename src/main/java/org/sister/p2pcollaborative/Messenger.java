@@ -6,10 +6,7 @@ import org.sister.p2pcollaborative.model.Character;
 
 import java.io.*;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class Messenger {
 
@@ -70,27 +67,32 @@ public class Messenger {
         }
     }
 
-    private String getIP(){
-        String ip;
-        try {
-            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-            while (interfaces.hasMoreElements()) {
-                NetworkInterface iface = interfaces.nextElement();
-                // filters out 127.0.0.1 and inactive interfaces
-                if (iface.isLoopback() || !iface.isUp())
-                    continue;
 
-                Enumeration<InetAddress> addresses = iface.getInetAddresses();
-                while(addresses.hasMoreElements()) {
-                    InetAddress addr = addresses.nextElement();
-                    ip = addr.getHostAddress();
-                    return ip;
-                }
-            }
-        } catch (SocketException e) {
-            throw new RuntimeException(e);
+    public static String getIP() {
+        InetAddress address = null;
+        try {
+            address = InetAddress.getLocalHost();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
         }
-        return "127.0.0.1";
+        if (address.isLoopbackAddress()) {
+            try {
+                for (NetworkInterface networkInterface : Collections
+                        .list(NetworkInterface.getNetworkInterfaces())) {
+                    if (!networkInterface.isLoopback()) {
+                        for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
+                            InetAddress a = interfaceAddress.getAddress();
+                            if (a instanceof Inet4Address) {
+                                return a.getHostAddress();
+                            }
+                        }
+                    }
+                }
+            } catch (SocketException e) {
+                e.printStackTrace();
+            }
+        }
+        return address.getHostAddress();
     }
 
 
