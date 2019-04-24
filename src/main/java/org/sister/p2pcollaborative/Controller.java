@@ -53,9 +53,10 @@ public class Controller{
 
             @Override
             public void keyTyped(KeyEvent keyEvent) {
-                int position = editor.getT().getCaretPosition();
-                Character c = crdt.localInsert(editor.getT().getText().charAt(position), position);
-                messenger.sendToClient("I" + new Gson().toJson(c));
+                System.out.printf("civa");
+//                int position = editor.getT().getCaretPosition();
+//                Character c = crdt.localInsert(editor.getT().getText().charAt(position), position);
+//                messenger.sendToClient("I" + new Gson().toJson(c));
             }
 
             @Override
