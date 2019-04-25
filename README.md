@@ -73,14 +73,16 @@ Solusi yang kami buat telah berhasil memenuhi spesifikkasi yang diminta pada tug
 ### Kasus Uji
 | Kasus Uji | Deskripsi Pengujian  | Keluaran yang diharapkan |
 | --------- | --- | --- |
-| *Concurrency Check* | Mengetik di salah satu node, kemudian mengecek text editor di node lain | Seluruh text editor menampilkan teks yang sama dengan node yang baru saja mengetik |
-|*Commutative Check*|Menghapus dan memasukkan karakter di index yang sama pada saat bersamaan, kemudian mengecek hasilnya. Teks yang digunakan adalah "hat", salah satu node menambahkan c di index ke-0,  menghapus karakter h|Di kedua node kata yang ditampilkan adalah "cat"|
-|*Idempotent Check*|Dua node menghapus karakter di index yang sama pada saat bersamaan. Kata yang digunakan adalah "hat", kedua node mencoba untuk menghapus karakter h |Di kedua node kata yang ditampilkan adalah "at"|
-|*Deletion Buffer Check*|Salah satu node diberikan delay pada proses insert, node lainnya mengetikkan karakter kemudian langsung menghapusnya.|Node yang diberikan delay mampu menunggu karakter ditambahkan baru menghapusnya tanpa terjadi error.|
+| *Concurrency Test* | Mengetik di salah satu node, kemudian mengecek text editor di node lain | Seluruh text editor menampilkan teks yang sama dengan node yang baru saja mengetik |
+|*Commutative Test*|Menghapus dan memasukkan karakter di index yang sama pada saat bersamaan, kemudian mengecek hasilnya. Teks yang digunakan adalah "hat", salah satu node menambahkan c di index ke-0,  menghapus karakter h|Di kedua node kata yang ditampilkan adalah "cat"|
+|*Idempotent Test*|Dua node menghapus karakter di index yang sama pada saat bersamaan. Kata yang digunakan adalah "hat", kedua node mencoba untuk menghapus karakter h |Di kedua node kata yang ditampilkan adalah "at"|
+|*Deletion Buffer Test*|Salah satu node diberikan delay pada proses insert, node lainnya mengetikkan karakter kemudian langsung menghapusnya.|Node yang diberikan delay mampu menunggu karakter ditambahkan baru menghapusnya tanpa terjadi error.|
 
 
 ### Screenshot/Video Program
-TBD
+Screenshot :
+<p align="center"> <img src="doc/GUI.png" alt="arsitektur" width="600"/> </p>
+Cek demo program kami [di sini] (https://drive.google.com/drive/folders/1t8LxeR9u4MOLSO_XD3VzZGVQWT0JeBAN?usp=sharing)
 
 ---
 # Thank You
