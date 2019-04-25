@@ -82,7 +82,7 @@ Solusi yang kami buat telah berhasil memenuhi spesifikkasi yang diminta pada tug
 ### Screenshot/Video Program
 Screenshot :
 <p align="center"> <img src="doc/GUI.png" alt="arsitektur" width="600"/> </p>
-Cek demo program kami [di sini] (https://drive.google.com/drive/folders/1t8LxeR9u4MOLSO_XD3VzZGVQWT0JeBAN?usp=sharing)
+Cek demo program kami [di sini](https://drive.google.com/drive/folders/1t8LxeR9u4MOLSO_XD3VzZGVQWT0JeBAN?usp=sharing)
 
 ---
 # Thank You
